@@ -49,4 +49,4 @@ async def givecoins_command(client, message: Message):
         uid, amount = int(uid), int(amount)
         get_or_create_user(uid)
         users.update_one({"user_id": uid}, {"$inc": {"coins": amount}})
-        await message.reply(f"Gave {amount} coins to user {
+        await message.reply(f"Gave {amount} coins to user )
