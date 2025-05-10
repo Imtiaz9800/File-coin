@@ -1,4 +1,3 @@
-
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from config import OWNER_ID
@@ -34,13 +33,14 @@ async def earn_command(client, message: Message):
 
     index = user.get("shortner_index", 0) % len(shortner_list)
     link = shortner_list[index]["url"]
-    users.update_one({"user_id": user["user_id"]}, {
-        "$set": {"shortner_index": index + 1},
-        "$inc": {"coins": 10}
-    })
-    await message.reply(f"Complete this shortlink to earn coins:
-{link}
-(+10 coins)")
+    users.update_one(
+        {"user_id": user["user_id"]},
+        {
+            "$set": {"shortner_index": index + 1},
+            "$inc": {"coins": 10}
+        }
+    )
+    await message.reply(f"Complete this shortlink to earn coins:\n{link}\n(+10 coins)")
 
 @Client.on_message(filters.command("givecoins") & filters.user(OWNER_ID))
 async def givecoins_command(client, message: Message):
@@ -49,15 +49,4 @@ async def givecoins_command(client, message: Message):
         uid, amount = int(uid), int(amount)
         get_or_create_user(uid)
         users.update_one({"user_id": uid}, {"$inc": {"coins": amount}})
-        await message.reply(f"Gave {amount} coins to user {uid}.")
-    except Exception as e:
-        await message.reply("Usage: /givecoins <user_id> <amount>")
-
-@Client.on_message(filters.command("addshortner") & filters.user(OWNER_ID))
-async def addshortner_command(client, message: Message):
-    try:
-        url = message.text.split(" ", 1)[1]
-        shorteners.insert_one({"url": url})
-        await message.reply("Shortener URL added.")
-    except:
-        await message.reply("Usage: /addshortner <shortner_url>")
+        await message.reply(f"Gave {amount} coins to user {
